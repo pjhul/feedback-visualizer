@@ -3,78 +3,77 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
 import pandas as pd
-from qdrant_client import QdrantClient
-from qdrant_client.http.models import Distance, PointStruct, VectorParams
 import uuid
 import io
 import umap
+import asyncio
+from qdrant_client import QdrantClient
+from qdrant_client.http.models import Distance, PointStruct, VectorParams
 
 oai = OpenAI()
 app = FastAPI()
 qdrant = QdrantClient("localhost", port=6333)
 
+# Try to create a collection in Qdrant, handle exception if it already exists
 try:
     qdrant.create_collection(
         collection_name="test_collection",
         vectors_config=VectorParams(size=1536, distance=Distance.DOT),
     )
-except:
-    print("Collection already exists")
-    pass
+except Exception as e:
+    print("Collection already exists or error occurred:", e)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace with your specific origins if needed
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-def get_embedding(text, model="text-embedding-ada-002"):
-   text = text.replace("\n", " ")
-   return oai.embeddings.create(input = [text], model=model).data[0].embedding
+async def get_embedding(texts, model="text-embedding-ada-002"):
+    texts = [text.replace("\n", " ") for text in texts]
+    response = await oai.embeddings.create(input=texts, model=model)
+    return [embedding.data[0].embedding for embedding in response]
 
 @app.post("/embed")
 async def embed(files: List[UploadFile]):
     session = uuid.uuid4()
-
-    combined_df = pd.DataFrame()  # Create a new DataFrame to store combined data
+    combined_df = pd.DataFrame()
 
     for file in files:
         contents = await file.read()
         df = pd.read_csv(io.StringIO(contents.decode('utf-8')))
-        combined_df = pd.concat([combined_df, df], ignore_index=True)  # Concatenate dataframes
+        combined_df = pd.concat([combined_df, df], ignore_index=True)
 
-        # df['embedding'] = df['Text'].apply(get_embedding)
+    combined_df['Combined'] = combined_df.apply(lambda row: ' '.join(row.astype(str)), axis=1)
 
-    # df = pd.read_csv('archive/Reviews.csv')
-    first_100 = combined_df.head(100)
+    # Process in batches of 100
+    batch_size = 100
+    tasks = []
+    for i in range(0, len(combined_df), batch_size):
+        batch = combined_df['Combined'][i:i+batch_size].tolist()
+        task = asyncio.ensure_future(get_embedding(batch))
+        tasks.append(task)
 
-    first_100['Combined'] = first_100.apply(lambda row: ' '.join(row.astype(str)), axis=1)
-    first_100['embedding'] = first_100['Combined'].apply(get_embedding)
+    embeddings = await asyncio.gather(*tasks)
+    embeddings = [item for sublist in embeddings for item in sublist]
 
-    # qdrant.upsert(
-    #     collection_name="test_collection",
-    #     points=[
-    #         PointStruct(id=index, vector=row['embedding'], payload={"text": row['Text'], "session": session, "score": row['Score']})
-    #         for index, row in first_100.iterrows()
-    #     ]
-    # )
+    combined_df['embedding'] = embeddings
 
+    # UMAP dimensionality reduction
     reducer = umap.UMAP(n_components=3)
+    embedding = reducer.fit_transform(list(combined_df['embedding']))
 
-    embedding = reducer.fit_transform(first_100['embedding'].tolist())
+    combined_df['x'] = embedding[:, 0]
+    combined_df['y'] = embedding[:, 1]
+    combined_df['z'] = embedding[:, 2]
 
-    first_100['x'] = embedding[:, 0]
-    first_100['y'] = embedding[:, 1]
-    first_100['z'] = embedding[:, 2]
+    # Remove the "embedding" and "Combined" columns
+    combined_df = combined_df.drop(columns=['embedding', 'Combined'])
 
-    # Remove the "embedding" column
-    first_100 = first_100.drop(columns=['embedding'])
-    first_100 = first_100.drop(columns=['Combined'])
-
-    return first_100.to_dict(orient='records')
-
+    return combined_df.to_dict(orient='records')
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=80)
+
