@@ -41,7 +41,7 @@ async def embed():
     #     ]
     # )
 
-    reducer = umap.UMAP()
+    reducer = umap.UMAP(n_components=3)
 
     embedding = reducer.fit_transform(first_100['embedding'].tolist())
 
