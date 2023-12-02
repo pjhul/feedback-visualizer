@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from openai import OpenAI
+from openai import AsyncOpenAI
 import pandas as pd
 import uuid
 import io
@@ -15,13 +15,13 @@ app = FastAPI()
 qdrant = QdrantClient("localhost", port=6333)
 
 # Try to create a collection in Qdrant, handle exception if it already exists
-try:
-    qdrant.create_collection(
-        collection_name="test_collection",
-        vectors_config=VectorParams(size=1536, distance=Distance.DOT),
-    )
-except Exception as e:
-    print("Collection already exists or error occurred:", e)
+# try:
+#     qdrant.create_collection(
+#         collection_name="test_collection",
+#         vectors_config=VectorParams(size=1536, distance=Distance.DOT),
+#     )
+# except Exception as e:
+#     print("Collection already exists or error occurred:", e)
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,7 +32,7 @@ app.add_middleware(
 
 async def get_embedding(texts, model="text-embedding-ada-002"):
     texts = [text.replace("\n", " ") for text in texts]
-    response = await oai.embeddings.acreate(input=texts, model=model)
+    response = await oai.embeddings.create(input=texts, model=model)
     return [embedding.data[0].embedding for embedding in response]
 
 @app.post("/embed")
