@@ -29,16 +29,17 @@ def get_embedding(text, model="text-embedding-ada-002"):
 async def embed(files: List[UploadFile]):
     session = uuid.uuid4()
 
-    df = pd.DataFrame()
+    combined_df = pd.DataFrame()  # Create a new DataFrame to store combined data
 
     for file in files:
         contents = await file.read()
-        df = df.append(pd.read_csv(io.StringIO(contents.decode('utf-8'))))
+        df = pd.read_csv(io.StringIO(contents.decode('utf-8')))
+        combined_df = pd.concat([combined_df, df], ignore_index=True)  # Concatenate dataframes
 
         # df['embedding'] = df['Text'].apply(get_embedding)
 
     # df = pd.read_csv('archive/Reviews.csv')
-    first_100 = df.head(100)
+    first_100 = combined_df.head(100)
 
     first_100['embedding'] = first_100['Text'].apply(get_embedding)
 
