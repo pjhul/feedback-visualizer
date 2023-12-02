@@ -10,7 +10,6 @@ import asyncio
 
 oai = AsyncOpenAI()
 app = FastAPI()
-qdrant = QdrantClient("localhost", port=6333)
 
 app.add_middleware(
     CORSMiddleware,
