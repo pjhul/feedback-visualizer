@@ -7,21 +7,10 @@ import uuid
 import io
 import umap
 import asyncio
-from qdrant_client import QdrantClient
-from qdrant_client.http.models import Distance, PointStruct, VectorParams
 
 oai = AsyncOpenAI()
 app = FastAPI()
 qdrant = QdrantClient("localhost", port=6333)
-
-# Try to create a collection in Qdrant, handle exception if it already exists
-# try:
-#     qdrant.create_collection(
-#         collection_name="test_collection",
-#         vectors_config=VectorParams(size=1536, distance=Distance.DOT),
-#     )
-# except Exception as e:
-#     print("Collection already exists or error occurred:", e)
 
 app.add_middleware(
     CORSMiddleware,
@@ -61,12 +50,11 @@ async def embed(files: List[UploadFile]):
     combined_df['embedding'] = embeddings
 
     # UMAP dimensionality reduction
-    reducer = umap.UMAP(n_components=3)
+    reducer = umap.UMAP(n_components=2)
     embedding = reducer.fit_transform(list(combined_df['embedding']))
 
     combined_df['x'] = embedding[:, 0]
     combined_df['y'] = embedding[:, 1]
-    combined_df['z'] = embedding[:, 2]
 
     # Remove the "embedding" and "Combined" columns
     combined_df = combined_df.drop(columns=['embedding', 'Combined'])
