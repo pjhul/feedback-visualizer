@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
 import pandas as pd
 from qdrant_client import QdrantClient
@@ -20,6 +21,13 @@ try:
 except:
     print("Collection already exists")
     pass
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace with your specific origins if needed
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 def get_embedding(text, model="text-embedding-ada-002"):
    text = text.replace("\n", " ")
