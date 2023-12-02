@@ -41,7 +41,8 @@ async def embed(files: List[UploadFile]):
     # df = pd.read_csv('archive/Reviews.csv')
     first_100 = combined_df.head(100)
 
-    first_100['embedding'] = first_100['Text'].apply(get_embedding)
+    first_100['Combined'] = first_100.apply(lambda row: ' '.join(row.astype(str)), axis=1)
+    first_100['embedding'] = first_100['Combined'].apply(get_embedding)
 
     # qdrant.upsert(
     #     collection_name="test_collection",
