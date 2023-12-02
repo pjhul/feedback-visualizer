@@ -1,6 +1,5 @@
 "use client";
 import axios from "axios";
-import Image from "next/image";
 import { useRef, useState } from "react";
 
 export default function Home() {
@@ -14,21 +13,24 @@ export default function Home() {
 
     if (file) {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("files", file);
 
       try {
         const { data } = await axios({
           method: "post",
-          url: "/api/what",
+          url: "http://164.90.153.245/embed",
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
+        console.log(data);
       } catch (error) {
         console.log("error uploading file", error);
-        fileInput.current.value = null;
       } finally {
+        if (fileInput.current) {
+          (fileInput.current as any).value = ""; // Clear the file input value
+        }
         setLoading(false);
       }
     }
@@ -46,6 +48,7 @@ export default function Home() {
           className="text-white font-bold text-3xl"
           onChange={handleSubmit}
           ref={fileInput}
+          disabled={loading}
         />
       </div>
     </div>
