@@ -3,6 +3,7 @@ from openai import OpenAI
 import pandas as pd
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, PointStruct, VectorParams
+import uuid
 
 oai = OpenAI()
 app = FastAPI()
@@ -23,6 +24,8 @@ def get_embedding(text, model="text-embedding-ada-002"):
 
 @app.post("/embed")
 async def embed():
+    session = uuid.uuid4()
+
     df = pd.read_csv('archive/Reviews.csv')
     first_100 = df.head(100)
 
