@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
 from openai import OpenAI
 import pandas as pd
 from qdrant_client import QdrantClient
