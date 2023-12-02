@@ -48,5 +48,8 @@ async def embed():
     first_100['x'] = embedding[:, 0]
     first_100['y'] = embedding[:, 1]
 
+    # Remove the "embedding" column
+    first_100 = first_100.drop(columns=['embedding'])
+
     return first_100.to_dict(orient='records')
 
