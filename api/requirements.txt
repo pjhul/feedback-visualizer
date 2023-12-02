@@ -1,5 +1,6 @@
 annotated-types==0.6.0
 anyio==3.7.1
+asyncio==3.4.3
 certifi==2023.11.17
 click==8.1.7
 distro==1.8.0
