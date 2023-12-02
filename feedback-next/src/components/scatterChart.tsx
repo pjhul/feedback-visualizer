@@ -8,11 +8,29 @@ import {
   Legend,
 } from "chart.js";
 import { Scatter } from "react-chartjs-2";
-import { faker } from "@faker-js/faker";
+import response from "@/data/response.json"; // Importing the JSON data
 
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
 export const options = {
+  plugins: {
+    tooltip: {
+      callbacks: {
+        label: function (context: any) {
+          var label = context.dataset.label || "";
+
+          if (label) {
+            label += ": ";
+          }
+          if (context.raw.Text) {
+            // Accessing the Text property of the data point
+            label += context.raw.Text;
+          }
+          return label;
+        },
+      },
+    },
+  },
   scales: {
     y: {
       beginAtZero: true,
@@ -23,11 +41,8 @@ export const options = {
 export const data = {
   datasets: [
     {
-      label: "A dataset",
-      data: Array.from({ length: 100 }, () => ({
-        x: faker.number.int({ min: -100, max: 100 }),
-        y: faker.number.int({ min: -100, max: 100 }),
-      })),
+      label: "Product Review",
+      data: response, // Using imported data
       backgroundColor: "rgba(255, 99, 132, 1)",
     },
   ],

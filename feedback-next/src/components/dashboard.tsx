@@ -6,7 +6,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { Vizi } from "./scatterchart";
+import { Vizi } from "@/components/scatterChart";
+import { JSX, SVGProps } from "react";
 
 export function Dashboard() {
   return (
@@ -92,7 +93,7 @@ export function Dashboard() {
   );
 }
 
-function IconGear(props) {
+function IconGear(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -102,9 +103,9 @@ function IconGear(props) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
       <path d="m12 14 4-4" />
       <path d="M3.34 19a10 10 0 1 1 17.32 0" />
