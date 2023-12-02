@@ -47,6 +47,7 @@ async def embed():
 
     first_100['x'] = embedding[:, 0]
     first_100['y'] = embedding[:, 1]
+    first_100['z'] = embedding[:, 2]
 
     # Remove the "embedding" column
     first_100 = first_100.drop(columns=['embedding'])
