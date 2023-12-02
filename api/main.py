@@ -32,7 +32,7 @@ app.add_middleware(
 
 async def get_embedding(texts, model="text-embedding-ada-002"):
     texts = [text.replace("\n", " ") for text in texts]
-    response = await oai.embeddings.create(input=texts, model=model)
+    response = await oai.embeddings.acreate(input=texts, model=model)
     return [embedding.data[0].embedding for embedding in response]
 
 @app.post("/embed")
