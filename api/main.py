@@ -34,7 +34,7 @@ async def get_embedding(texts, model="text-embedding-ada-002"):
     texts = [text.replace("\n", " ") for text in texts]
     response = await oai.embeddings.create(input=texts, model=model)
     print(response)
-    return [embedding.data[0].embedding for embedding in response]
+    return [embedding.embedding for embedding in response]
 
 @app.post("/embed")
 async def embed(files: List[UploadFile]):
