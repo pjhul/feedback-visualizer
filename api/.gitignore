@@ -1,2 +1,4 @@
 .env/
 qdrant_storage/
+__pycache__/
+archive

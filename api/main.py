@@ -5,6 +5,8 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, PointStruct, VectorParams
 import uuid
 
+import umap
+
 oai = OpenAI()
 app = FastAPI()
 qdrant = QdrantClient("localhost", port=6333)
@@ -31,15 +33,20 @@ async def embed():
 
     first_100['embedding'] = first_100['Text'].apply(get_embedding)
 
-    print(first_100.head())
+    # qdrant.upsert(
+    #     collection_name="test_collection",
+    #     points=[
+    #         PointStruct(id=index, vector=row['embedding'], payload={"text": row['Text'], "session": session, "score": row['Score']})
+    #         for index, row in first_100.iterrows()
+    #     ]
+    # )
 
-    qdrant.upsert(
-        collection_name="test_collection",
-        points=[
-            PointStruct(id=index, vector=row['embedding'], payload={"text": row['Text']})
-            for index, row in first_100.iterrows()
-        ]
-    )
+    reducer = umap.UMAP()
 
-    return {"message": "This is the embed endpoint"}
+    embedding = reducer.fit_transform(first_100['embedding'].tolist())
+
+    first_100['x'] = embedding[:, 0]
+    first_100['y'] = embedding[:, 1]
+
+    return first_100.to_dict(orient='records')
 
