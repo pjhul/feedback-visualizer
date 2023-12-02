@@ -5,7 +5,7 @@ import pandas as pd
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, PointStruct, VectorParams
 import uuid
-
+import io
 import umap
 
 oai = OpenAI()
