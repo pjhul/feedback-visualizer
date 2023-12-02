@@ -25,10 +25,18 @@ def get_embedding(text, model="text-embedding-ada-002"):
    return oai.embeddings.create(input = [text], model=model).data[0].embedding
 
 @app.post("/embed")
-async def embed():
+async def embed(files: List[UploadFile] = File(...)):
     session = uuid.uuid4()
 
-    df = pd.read_csv('archive/Reviews.csv')
+    df = pd.DataFrame()
+
+    for file in files:
+        contents = await file.read()
+        df = df.append(pd.read_csv(io.StringIO(contents.decode('utf-8'))))
+
+        # df['embedding'] = df['Text'].apply(get_embedding)
+
+    # df = pd.read_csv('archive/Reviews.csv')
     first_100 = df.head(100)
 
     first_100['embedding'] = first_100['Text'].apply(get_embedding)
