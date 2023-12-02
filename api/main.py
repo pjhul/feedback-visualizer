@@ -28,15 +28,15 @@ async def embed():
 
     first_100['embedding'] = first_100['Text'].apply(get_embedding)
 
-    for index, row in first_100.iterrows():
-        qdrant.upsert(
-            collection_name="test_collection",
-            points=[
-                PointStruct(id=index, vector=row['embedding'], payload={"text": row['Text']})
-            ]
-        )
-
     print(first_100.head())
+
+    qdrant.upsert(
+        collection_name="test_collection",
+        points=[
+            PointStruct(id=index, vector=row['embedding'], payload={"text": row['Text']})
+            for index, row in first_100.iterrows()
+        ]
+    )
 
     return {"message": "This is the embed endpoint"}
 
