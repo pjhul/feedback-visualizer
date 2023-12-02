@@ -62,6 +62,7 @@ async def embed(files: List[UploadFile]):
 
     # Remove the "embedding" column
     first_100 = first_100.drop(columns=['embedding'])
+    first_100 = first_100.drop(columns=['Combined'])
 
     return first_100.to_dict(orient='records')
 
