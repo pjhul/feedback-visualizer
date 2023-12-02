@@ -25,7 +25,7 @@ def get_embedding(text, model="text-embedding-ada-002"):
    return oai.embeddings.create(input = [text], model=model).data[0].embedding
 
 @app.post("/embed")
-async def embed(files: List[UploadFile] = File(...)):
+async def embed(files: List[UploadFile]):
     session = uuid.uuid4()
 
     df = pd.DataFrame()
