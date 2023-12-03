@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 import { JSX, SVGProps } from "react";
@@ -10,6 +10,8 @@ import { Slider } from "@/components/ui/slider";
 // Components
 import { Upload } from "@/components/upload";
 import { Vizi } from "@/components/scatterChart";
+import { Search } from "./Search";
+import ChatPage from "@/components/chatPage";
 
 export function Dashboard() {
   return (
@@ -92,12 +94,7 @@ export function Dashboard() {
         </main>
         <aside className="w-96 p-4 border-l">
           <h2 className="text-lg font-semibold mb-4">GPT-4 Chat</h2>
-          <p>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptate
-            incidunt minus accusamus repellendus adipisci vitae, officia
-            aliquam. Corrupti eius magnam molestiae. Vitae, eaque natus?
-            Voluptatibus vitae dolorem culpa corporis velit.
-          </p>
+          <ChatPage />
         </aside>
       </div>
     </div>
