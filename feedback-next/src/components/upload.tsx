@@ -52,6 +52,8 @@ export function Upload() {
         if (fileInput.current) {
           (fileInput.current as any).value = ""; // Clear the file input value
         }
+
+        window.location.reload();
       } catch (error) {
         console.log("error uploading file", error);
       } finally {
