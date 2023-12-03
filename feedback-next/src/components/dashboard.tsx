@@ -1,43 +1,15 @@
-"use client";
 import Link from "next/link";
+import { JSX, SVGProps } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
+
+// Components
+import { Upload } from "@/components/upload";
 import { Vizi } from "@/components/scatterChart";
-import { JSX, SVGProps, useRef, useState } from "react";
-import axios from "axios";
 
 export function Dashboard() {
-  const [loading, setLoading] = useState(false);
-  const fileInput = useRef(null);
-
-  const handleSubmit = async (event: any) => {
-    setLoading(true);
-    const file = event.target.files[0];
-    console.log(file);
-
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      try {
-        const { data } = await axios({
-          method: "post",
-          url: "/api/what",
-          data: formData,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-      } catch (error) {
-        console.log("error uploading file", error);
-        fileInput.current.value = null;
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
-
   return (
     <div key="1" className="flex flex-col h-screen w-full">
       <header className="flex justify-between items-center h-16 px-4 border-b md:px-6">
@@ -46,18 +18,10 @@ export function Dashboard() {
           href="#"
         >
           <IconGear className="w-6 h-6" />
-          <span className="sr-only">Settings</span>
+          <span>Vector Visualizer</span>
         </Link>
-        <div>
-          <input
-            type="file"
-            accept="text/csv"
-            className="font-medium text-md bg-gray-300 rounded-lg p-1.5"
-            onChange={handleSubmit}
-            ref={fileInput}
-          />
-        </div>
         <div className="flex items-center gap-4 md:gap-2 lg:gap-4">
+          <Upload />
           <Button className="rounded-full" size="icon" variant="ghost">
             <img
               alt="Avatar"
@@ -124,7 +88,7 @@ export function Dashboard() {
         <main className="flex-1 p-4">
           <Vizi />
         </main>
-        <aside className="w-64 p-4 border-l">
+        <aside className="w-96 p-4 border-l">
           <h2 className="text-lg font-semibold mb-4">GPT-4 Chat</h2>
           <p>
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptate

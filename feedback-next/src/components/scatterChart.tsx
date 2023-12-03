@@ -8,7 +8,7 @@ import {
   Legend,
 } from "chart.js";
 import { Scatter } from "react-chartjs-2";
-import response from "@/data/response.json"; // Importing the JSON data
+// import response from "@/data/response.json"; // Importing the JSON data
 
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
@@ -22,11 +22,13 @@ export const options = {
           if (label) {
             label += ": ";
           }
-          if (context.raw.Text) {
-            // Accessing the Text property of the data point
-            label += context.raw.Text;
-          }
-          return label;
+          // if (context.raw.text) {
+          //   // Accessing the Text property of the data point
+          //   label += context.raw.text;
+          // }
+          // foreach context add it to the label with new line
+          return Object.values(context.raw);
+          //  label;
         },
       },
     },
@@ -38,13 +40,33 @@ export const options = {
   },
 };
 
+export const getDatasets = () => {
+  // Grab local storage keys from "datasets" and use them to grab the data from local storage
+
+  const datasetNames = JSON.parse(localStorage.getItem("datasets") || "[]");
+  // go to "datasets" and grab the data from local storage
+  let datasets = [];
+  datasetNames.forEach((dataset: string) => {
+    const data = JSON.parse(localStorage.getItem(dataset) || "[]");
+    console.log("data", data);
+    // add data to the chart
+    datasets.push({
+      label: dataset,
+      data: data,
+      backgroundColor: "rgb(255, 99, 132)",
+    });
+  });
+  return datasets;
+};
+
 export const data = {
   datasets: [
-    {
-      label: "Product Review",
-      data: response, // Using imported data
-      backgroundColor: "rgba(255, 99, 132, 1)",
-    },
+    // {
+    //   label: "Scatter Dataset",
+    //   data: response,
+    //   backgroundColor: "rgb(255, 99, 132)",
+    // },
+    ...getDatasets(),
   ],
 };
 
