@@ -59,9 +59,9 @@ async def embed(files: List[UploadFile]):
     combined_df['x'] = embedding[:, 0]
     combined_df['y'] = embedding[:, 1]
 
-    combined = combined.replace([np.inf, -np.inf], np.nan).fillna(0)
+    combined_df = combined_df.replace([np.inf, -np.inf], np.nan).fillna(0)
 
-    combined = combined.round(3)
+    combined_df = combined_df.round(3)
 
     # Remove the "embedding" and "Combined" columns
     combined_df = combined_df.drop(columns=['embedding', 'Combined'])
