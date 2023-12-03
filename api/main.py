@@ -3,6 +3,7 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from openai import AsyncOpenAI
 import pandas as pd
+import numpy as np
 import uuid
 import io
 import umap
