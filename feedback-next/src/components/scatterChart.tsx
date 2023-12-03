@@ -9,11 +9,34 @@ import {
 } from "chart.js";
 import { Scatter } from "react-chartjs-2";
 // import response from "@/data/response.json"; // Importing the JSON data
+import zoomPlugin from "chartjs-plugin-zoom";
 
-ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
+ChartJS.register(
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+  zoomPlugin
+);
 
 export const options = {
   plugins: {
+    zoom: {
+      zoom: {
+        wheel: {
+          enabled: true, // Enable zooming with mouse wheel
+        },
+        pinch: {
+          enabled: true, // Enable zooming with pinch gestures
+        },
+        mode: "xy", // Zoom both axes
+      },
+      pan: {
+        enabled: true, // Enable panning
+        mode: "xy", // Pan both axes
+      },
+    },
     tooltip: {
       callbacks: {
         label: function (context: any) {
@@ -34,8 +57,15 @@ export const options = {
     },
   },
   scales: {
+    x: {
+      ticks: {
+        display: false, // Hides the tick labels on the X-axis
+      },
+    },
     y: {
-      beginAtZero: true,
+      ticks: {
+        display: false, // Hides the tick labels on the Y-axis
+      },
     },
   },
 };
