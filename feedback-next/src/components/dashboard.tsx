@@ -39,7 +39,7 @@ export function Dashboard() {
         </div>
       </header>
       <div className="flex h-full">
-        <aside className="h-full w-64 border-r p-4">
+        {/*<aside className="h-full w-64 border-r p-4">
           <div className="grid gap-4">
             <div>
               <label
@@ -84,7 +84,7 @@ export function Dashboard() {
               />
             </div>
           </div>
-        </aside>
+        </aside>*/}
         <main className="flex-1 p-4">
           <Vizi />
         </main>
