@@ -8,7 +8,7 @@ import {
   Legend,
 } from "chart.js";
 import { Scatter } from "react-chartjs-2";
-import {Search} from "./Search";
+import { Search } from "./Search";
 // import response from "@/data/response.json"; // Importing the JSON data
 import zoomPlugin from "chartjs-plugin-zoom";
 
@@ -46,6 +46,7 @@ export const options = {
           if (label) {
             label += ": ";
           }
+
           // if (context.raw.text) {
           //   // Accessing the Text property of the data point
           //   label += context.raw.text;
@@ -79,8 +80,8 @@ export const getDatasets = () => {
   let datasets = [];
   datasetNames.forEach((dataset: string) => {
     const data = JSON.parse(localStorage.getItem(dataset) || "[]");
-    console.log("data", data);
     // add data to the chart
+
     datasets.push({
       label: dataset,
       data: data,
