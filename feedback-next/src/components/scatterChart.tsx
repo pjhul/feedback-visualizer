@@ -11,6 +11,7 @@ import { Scatter } from "react-chartjs-2";
 import {Search} from "./Search";
 // import response from "@/data/response.json"; // Importing the JSON data
 import zoomPlugin from "chartjs-plugin-zoom";
+import {useState} from "react";
 
 ChartJS.register(
   LinearScale,
@@ -71,43 +72,49 @@ export const options = {
   },
 };
 
-export const getDatasets = () => {
-  // Grab local storage keys from "datasets" and use them to grab the data from local storage
-
-  const datasetNames = JSON.parse(localStorage.getItem("datasets") || "[]");
-  // go to "datasets" and grab the data from local storage
-  let datasets = [];
-  datasetNames.forEach((dataset: string) => {
-    const data = JSON.parse(localStorage.getItem(dataset) || "[]");
-    console.log("data", data);
-    // add data to the chart
-    datasets.push({
-      label: dataset,
-      data: data,
-      // random color
-      backgroundColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-    });
-  });
-  return datasets;
-};
-
-export const data = {
-  datasets: [
-    // {
-    //   label: "Scatter Dataset",
-    //   data: response,
-    //   backgroundColor: "rgb(255, 99, 132)",
-    // },
-    ...getDatasets(),
-  ],
-};
-
 export function Vizi() {
+  const getDatasets = () => {
+    // Grab local storage keys from "datasets" and use them to grab the data from local storage
+
+    const datasetNames = JSON.parse(localStorage.getItem("datasets") || "[]");
+
+    console.log("datasetNames", datasetNames);
+
+    return datasetNames.map((dataset: string) => {
+      const data = JSON.parse(localStorage.getItem(dataset) || "[]");
+
+      return {
+        label: dataset,
+        data: data,
+        // random color
+        backgroundColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+      }
+    });
+  };
+
+  const [datasets, setDatasets] = useState(getDatasets());
+
+  console.log("datasets", datasets);
+
   return (
     <div className="w-full h-full">
-      <Scatter data={data} options={options} />
+      <Scatter data={{
+        datasets: datasets,
+      }} options={options} />
 
-      <Search />
+      <Search addData={(data) => {
+        console.log("data", data);
+        setDatasets([...datasets, {
+          label: "Scatter Dataset",
+          data: [
+            {
+              x: data.x,
+              y: data.y,
+            }
+          ],
+          backgroundColor: "rgb(255, 99, 132)",
+        }])
+      }}/>
     </div>
   );
 }

@@ -10,7 +10,6 @@ import { Slider } from "@/components/ui/slider";
 // Components
 import { Upload } from "@/components/upload";
 import { Vizi } from "@/components/scatterChart";
-import {Search} from "./Search";
 
 export function Dashboard() {
   return (
