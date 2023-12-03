@@ -78,8 +78,6 @@ export function Vizi() {
 
     const datasetNames = JSON.parse(localStorage.getItem("datasets") || "[]");
 
-    console.log("datasetNames", datasetNames);
-
     return datasetNames.map((dataset: string) => {
       const data = JSON.parse(localStorage.getItem(dataset) || "[]");
 
@@ -94,8 +92,6 @@ export function Vizi() {
 
   const [datasets, setDatasets] = useState(getDatasets());
 
-  console.log("datasets", datasets);
-
   return (
     <div className="w-full h-full">
       <Scatter data={{
@@ -103,7 +99,6 @@ export function Vizi() {
       }} options={options} />
 
       <Search addData={(data) => {
-        console.log("data", data);
         setDatasets([...datasets, {
           label: "Scatter Dataset",
           data: [
