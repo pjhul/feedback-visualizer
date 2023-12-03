@@ -2,17 +2,29 @@
 
 import React, { useState } from 'react'
 
-export const Search = () => {
+type SearchProps = {
+  addData: ({ x, y, query }: { x: number; y: number; query: string }) => void
+}
+
+export const Search = (props: SearchProps) => {
   const [search, setSearch] = useState('')
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     const session = localStorage.getItem('session')
 
     try {
-      const response = fetch(`http://164.90.153.245?query=${search}&session=${session}`)
-      console.log(response)
+      const response = await fetch(`http://164.90.153.245/search?query=${search}&session=${session}`)
+
+      if (response) {
+        const data = await response.json()
+        props.addData({
+          query: search,
+          x: data[0],
+          y: data[1]
+        })
+      }
     }
     catch (error) {
       console.log(error)

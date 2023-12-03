@@ -3,6 +3,7 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from openai import AsyncOpenAI
 import pandas as pd
+import numpy as np
 import uuid
 import io
 import umap
@@ -32,7 +33,7 @@ async def embed(files: List[UploadFile]):
 
     for file in files:
         contents = await file.read()
-        df = pd.read_csv(io.StringIO(contents.decode('utf-8')))
+        df = pd.read_csv(io.StringIO(contents.decode('utf-8')), error_bad_lines=False)
         combined_df = pd.concat([combined_df, df], ignore_index=True)
 
     combined_df['Combined'] = combined_df.apply(lambda row: ' '.join(row.astype(str)), axis=1)
@@ -58,6 +59,10 @@ async def embed(files: List[UploadFile]):
 
     combined_df['x'] = embedding[:, 0]
     combined_df['y'] = embedding[:, 1]
+
+    combined_df = combined_df.replace([np.inf, -np.inf], np.nan).fillna(0)
+
+    combined_df = combined_df.round(3)
 
     # Remove the "embedding" and "Combined" columns
     combined_df = combined_df.drop(columns=['embedding', 'Combined'])
