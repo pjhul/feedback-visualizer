@@ -8,6 +8,7 @@ import {
   Legend,
 } from "chart.js";
 import { Scatter } from "react-chartjs-2";
+import {Search} from "./Search";
 // import response from "@/data/response.json"; // Importing the JSON data
 import zoomPlugin from "chartjs-plugin-zoom";
 
@@ -105,6 +106,8 @@ export function Vizi() {
   return (
     <div className="w-full h-full">
       <Scatter data={data} options={options} />
+
+      <Search />
     </div>
   );
 }
