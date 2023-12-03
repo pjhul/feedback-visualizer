@@ -100,14 +100,15 @@ export function Vizi() {
 
       <Search addData={(data) => {
         setDatasets([...datasets, {
-          label: "Scatter Dataset",
+          label: data.query,
           data: [
             {
               x: data.x,
               y: data.y,
             }
           ],
-          backgroundColor: "rgb(255, 99, 132)",
+          radius: 25,
+          backgroundColor: "rgb(255, 99, 132, 0.4)",
         }])
       }}/>
     </div>

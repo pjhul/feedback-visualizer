@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 
 type SearchProps = {
-  addData: ({ x, y }: { x: number; y: number }) => void
+  addData: ({ x, y, query }: { x: number; y: number; query: string }) => void
 }
 
 export const Search = (props: SearchProps) => {
@@ -20,6 +20,7 @@ export const Search = (props: SearchProps) => {
       if (response) {
         const data = await response.json()
         props.addData({
+          query: search,
           x: data[0],
           y: data[1]
         })

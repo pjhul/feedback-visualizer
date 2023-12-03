@@ -33,7 +33,7 @@ async def embed(files: List[UploadFile]):
 
     for file in files:
         contents = await file.read()
-        df = pd.read_csv(io.StringIO(contents.decode('utf-8')))
+        df = pd.read_csv(io.StringIO(contents.decode('utf-8')), error_bad_lines=False)
         combined_df = pd.concat([combined_df, df], ignore_index=True)
 
     combined_df['Combined'] = combined_df.apply(lambda row: ' '.join(row.astype(str)), axis=1)
