@@ -42,10 +42,11 @@ export function Upload() {
 
         if (data) {
           // save data to local storage with name as key
-          localStorage.setItem(name, JSON.stringify(data));
+          localStorage.setItem(name, JSON.stringify(data.data));
           // save name to local storage dont overwrite existing names
           const datasets = JSON.parse(localStorage.getItem("datasets") || "[]");
           localStorage.setItem("datasets", JSON.stringify([...datasets, name]));
+          localStorage.setItem("session", data.session)
         }
 
         if (fileInput.current) {

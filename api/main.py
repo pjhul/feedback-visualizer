@@ -23,6 +23,8 @@ async def get_embedding(texts, model="text-embedding-ada-002"):
     response = await oai.embeddings.create(input=texts, model=model)
     return [embedding.embedding for embedding in response.data]
 
+models = {}
+
 @app.post("/embed")
 async def embed(files: List[UploadFile]):
     session = uuid.uuid4()
@@ -52,13 +54,25 @@ async def embed(files: List[UploadFile]):
     reducer = umap.UMAP(n_components=2)
     embedding = reducer.fit_transform(list(combined_df['embedding']))
 
+    models[session] = reducer
+
     combined_df['x'] = embedding[:, 0]
     combined_df['y'] = embedding[:, 1]
 
     # Remove the "embedding" and "Combined" columns
     combined_df = combined_df.drop(columns=['embedding', 'Combined'])
 
-    return combined_df.to_dict(orient='records')
+    return {
+        'session': session,
+        'data': combined_df.to_dict(orient='records')
+    }
+
+@app.get("/search")
+async def search(session: uuid.UUID, query: str):
+    reducer = models[session]
+    query_embedding = await get_embedding([query])
+    query_embedding = reducer.transform(query_embedding)
+    return query_embedding[0].tolist()
 
 if __name__ == "__main__":
     import uvicorn
