@@ -53,7 +53,8 @@ export const getDatasets = () => {
     datasets.push({
       label: dataset,
       data: data,
-      backgroundColor: "rgb(255, 99, 132)",
+      // random color
+      backgroundColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
     });
   });
   return datasets;

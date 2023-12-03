@@ -44,7 +44,8 @@ export function Upload() {
           // save data to local storage with name as key
           localStorage.setItem(name, JSON.stringify(data));
           // save name to local storage dont overwrite existing names
-          localStorage.setItem("datasets", JSON.stringify([name]));
+          const datasets = JSON.parse(localStorage.getItem("datasets") || "[]");
+          localStorage.setItem("datasets", JSON.stringify([...datasets, name]));
         }
 
         if (fileInput.current) {
